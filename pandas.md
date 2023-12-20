@@ -106,3 +106,36 @@ df.groupby("store").agg(
     total_sales = ("sales_qty","sum")
 )
 ```
+
+
+## Read latest from CSV in shared folder. Print the col name and value (when it is too long in tabular format)
+```
+import os
+import glob
+import pandas as pd
+
+# Set the directory path
+dir_path = r"\\ead.dom\app-it1\ITSM\UCMDB\UCMDB-Reports"
+
+# Set the file pattern
+file_pattern = "All_Computer_CIs_with_details_*.csv"
+
+# Get a list of all CSV files in the directory that match the pattern
+csv_files = glob.glob(os.path.join(dir_path, file_pattern))
+
+# Sort the list of CSV files by modification time (newest first)
+csv_files.sort(key=os.path.getmtime, reverse=True)
+
+# Get the path of the latest CSV file
+latest_csv = csv_files[0]
+
+# Read the CSV file into a DataFrame
+df = pd.read_csv(latest_csv)
+
+# Find the row where [Node]:Display Label = 'sv01072'
+row = df[(df['[Node]:Display Label'] == 'sv01072')]
+
+# Print the column names and values of the row
+for column_name, value in row.iloc[0].items():
+    print(f"{column_name}: {value}")
+```
